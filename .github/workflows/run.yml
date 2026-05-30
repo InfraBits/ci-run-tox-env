@@ -1,0 +1,77 @@
+name: Execute tox environments
+
+on:
+  workflow_call:
+    inputs:
+      environments:
+        required: true
+        type: string
+
+      system_packages:
+        required: false
+        type: string
+        default: ""
+
+      install_dependencies:
+        required: false
+        type: string
+        default: "false"
+
+      services:
+        required: false
+        type: string
+        default: "{}"
+
+      mysql_config:
+        required: false
+        type: string
+        default: "{}"
+
+jobs:
+  run-tox-env:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.environments != '[]' && inputs.environments != '' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJson(inputs.environments) }}
+    services:
+      selenium:
+        image: ${{ (contains(fromJson(inputs.services)[matrix.target], 'selenium') || contains(fromJson(inputs.services)['*'], 'selenium')) && 'selenium/standalone-chrome' || '' }}
+        options: --shm-size=2gb
+
+      mysql:
+        image: ${{ (contains(fromJson(inputs.services)[matrix.target], 'mysql') || contains(fromJson(inputs.services)['*'], 'mysql')) && 'mariadb' || '' }}
+        env: { "MARIADB_ALLOW_EMPTY_ROOT_PASSWORD": "1" }
+        ports: [3306:3306]
+
+      redis:
+        image: ${{ (contains(fromJson(inputs.services)[matrix.target], 'redis') || contains(fromJson(inputs.services)['*'], 'redis')) && 'redis' || '' }}
+        ports: [6379:6379]
+    steps:
+      - uses: infrabits/ci-setup-mysql@main
+        with:
+          username: ${{ fromJson(inputs.mysql_config)['username'] }}
+          schemas: ${{ fromJson(inputs.mysql_config)['schemas'] }}
+        if: inputs.mysql_config != '{}'
+
+      - name: checkout repo
+        uses: actions/checkout@v4
+
+      - name: setup python
+        uses: infrabits/ci-setup-python@main
+        with:
+          install_dependencies: ${{ inputs.install_dependencies }}
+          install_test_dependencies: true
+          install_tox: true
+          system_packages: ${{ inputs.system_packages }}
+
+      - uses: infrabits/ci-run-tox-env@main
+        with:
+          environment: ${{ matrix.target }}
+
+  no-tox-env:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.environments == '[]' || inputs.environments == '' }}
+    steps:
+      - run: echo "No environments found to execute"

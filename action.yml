@@ -1,0 +1,58 @@
+name: Run tox environment
+description: Execute a tox environment
+
+inputs:
+  environment:
+    required: true
+
+  environment_variables:
+    required: false
+    type: string
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - id: setup
+      shell: bash
+      run: |
+        echo "report_dir=${{ runner.temp }}/tox-$(uuidgen)" >> $GITHUB_OUTPUT
+
+    - shell: bash
+      run: |
+        if [ -n "${{ inputs.environment_variables }}" ];
+        then
+          while IFS= read -r environment_variable;
+          do
+            if [ -n "$environment_variable" ];
+            then
+              echo "::add-mask::$environment_variable"
+              export "$environment_variable"
+            fi
+          done <<< "${{ inputs.environment_variables }}"
+        fi
+
+        poetry run tox --current-env -e ${{ inputs.environment }}
+      env:
+        PYTEST_ADDOPTS: --junit-xml=${{ steps.setup.outputs.report_dir }}/junit.xml
+
+    - id: check_artifacts
+      shell: bash
+      run: |
+        if [ -f "${{ steps.setup.outputs.report_dir }}/junit.xml" ];
+        then
+          echo "have_junit_report=1" >> $GITHUB_OUTPUT;
+        fi
+      if: success() || failure()
+
+    - uses: mikepenz/action-junit-report@v6
+      with:
+        report_paths: ${{ steps.setup.outputs.report_dir }}/junit.xml
+        check_name: pytest report (${{ inputs.environment }})
+        check_annotations: true
+        job_summary: true
+        detailed_summary: true
+        flaky_summary: true
+        updateComment: true
+        fail_on_failure: false
+      if: (success() || failure()) && steps.check_artifacts.outputs.have_junit_report == '1'
