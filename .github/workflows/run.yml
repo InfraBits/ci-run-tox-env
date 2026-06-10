@@ -27,6 +27,11 @@ on:
         type: string
         default: "{}"
 
+      environment_variables:
+        required: false
+        type: string
+        default: ""
+
 jobs:
   run-tox-env:
     runs-on: ubuntu-latest
@@ -69,6 +74,7 @@ jobs:
       - uses: infrabits/ci-run-tox-env@main
         with:
           environment: ${{ matrix.target }}
+          environment_variables: ${{ inputs.environment_variables }}
 
   no-tox-env:
     runs-on: ubuntu-latest
