@@ -70,6 +70,7 @@ jobs:
           install_test_dependencies: true
           install_tox: true
           system_packages: ${{ inputs.system_packages }}
+          environment_variables: ${{ inputs.environment_variables }}
 
       - uses: infrabits/ci-run-tox-env@main
         with:
