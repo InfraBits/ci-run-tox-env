@@ -45,7 +45,7 @@ runs:
         fi
       if: success() || failure()
 
-    - uses: mikepenz/action-junit-report@v6
+    - uses: mikepenz/action-junit-report@a9170d5795813c01ab4901ffb045b52bab4ab09d # v6
       with:
         report_paths: ${{ steps.setup.outputs.report_dir }}/junit.xml
         check_name: pytest report (${{ inputs.environment }})
