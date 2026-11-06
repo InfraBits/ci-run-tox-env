@@ -61,7 +61,7 @@ jobs:
         if: inputs.mysql_config != '{}'
 
       - name: checkout repo
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: setup python
         uses: infrabits/ci-setup-python@be3a0e8654650f5e4fd7e81c40acde805e6fa9e7 # v1.4.0
