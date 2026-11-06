@@ -54,24 +54,24 @@ jobs:
         image: ${{ (contains(fromJson(inputs.services)[matrix.target], 'redis') || contains(fromJson(inputs.services)['*'], 'redis')) && 'redis' || '' }}
         ports: [6379:6379]
     steps:
-      - uses: infrabits/ci-setup-mysql@main
+      - uses: infrabits/ci-setup-mysql@76d1a65928eeb4023bcc2596a8f628a878fcb019 # main
         with:
           username: ${{ fromJson(inputs.mysql_config)['username'] }}
           schemas: ${{ fromJson(inputs.mysql_config)['schemas'] }}
         if: inputs.mysql_config != '{}'
 
       - name: checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: setup python
-        uses: infrabits/ci-setup-python@main
+        uses: infrabits/ci-setup-python@e067cec0986e3da663d95e6de24833c60322547c # main
         with:
           install_dependencies: ${{ inputs.install_dependencies }}
           install_test_dependencies: true
           install_tox: true
           system_packages: ${{ inputs.system_packages }}
 
-      - uses: infrabits/ci-run-tox-env@main
+      - uses: infrabits/ci-run-tox-env@4e786de676c2efdd6d892721d93480c7e6c621ad # main
         with:
           environment: ${{ matrix.target }}
           environment_variables: ${{ inputs.environment_variables }}
