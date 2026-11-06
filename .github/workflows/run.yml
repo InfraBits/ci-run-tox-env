@@ -54,7 +54,7 @@ jobs:
         image: ${{ (contains(fromJson(inputs.services)[matrix.target], 'redis') || contains(fromJson(inputs.services)['*'], 'redis')) && 'redis' || '' }}
         ports: [6379:6379]
     steps:
-      - uses: infrabits/ci-setup-mysql@76d1a65928eeb4023bcc2596a8f628a878fcb019 # main
+      - uses: infrabits/ci-setup-mysql@76d1a65928eeb4023bcc2596a8f628a878fcb019 # v1.2.0
         with:
           username: ${{ fromJson(inputs.mysql_config)['username'] }}
           schemas: ${{ fromJson(inputs.mysql_config)['schemas'] }}
@@ -64,14 +64,14 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: setup python
-        uses: infrabits/ci-setup-python@e067cec0986e3da663d95e6de24833c60322547c # main
+        uses: infrabits/ci-setup-python@be3a0e8654650f5e4fd7e81c40acde805e6fa9e7 # v1.4.0
         with:
           install_dependencies: ${{ inputs.install_dependencies }}
           install_test_dependencies: true
           install_tox: true
           system_packages: ${{ inputs.system_packages }}
 
-      - uses: infrabits/ci-run-tox-env@4e786de676c2efdd6d892721d93480c7e6c621ad # main
+      - uses: infrabits/ci-run-tox-env@24ac4dc3089fa5bbfa4151b4693790ec5c648ec0 # v1.2.2
         with:
           environment: ${{ matrix.target }}
           environment_variables: ${{ inputs.environment_variables }}
