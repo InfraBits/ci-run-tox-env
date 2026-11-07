@@ -64,14 +64,14 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: setup python
-        uses: infrabits/ci-setup-python@0a2dd968401b001362997490a977f0177a600232 # v1.6.0
+        uses: infrabits/ci-setup-python@e2b1af9cbd4f0cf31736b5ae234471b61aa41220 # v1.8.0
         with:
           install_dependencies: ${{ inputs.install_dependencies }}
           install_test_dependencies: true
           install_tox: true
           system_packages: ${{ inputs.system_packages }}
 
-      - uses: infrabits/ci-run-tox-env@37fc7f6fd3377207ade86db0056d1a826f61e278 # v1.4.0
+      - uses: infrabits/ci-run-tox-env@78d52c3c24baa2c85eb416ebbc0917efb42c454f # v1.6.0
         with:
           environment: ${{ matrix.target }}
           environment_variables: ${{ inputs.environment_variables }}
