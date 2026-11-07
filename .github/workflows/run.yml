@@ -54,7 +54,7 @@ jobs:
         image: ${{ (contains(fromJson(inputs.services)[matrix.target], 'redis') || contains(fromJson(inputs.services)['*'], 'redis')) && 'redis' || '' }}
         ports: [6379:6379]
     steps:
-      - uses: infrabits/ci-setup-mysql@4a033edac0ea4e6f79931354d477e5e144666f8c # v1.4.0
+      - uses: infrabits/ci-setup-mysql@5068d01b5e9145c4aa58832083d378207fd0d361 # v1.6.0
         with:
           username: ${{ fromJson(inputs.mysql_config)['username'] }}
           schemas: ${{ fromJson(inputs.mysql_config)['schemas'] }}
