@@ -54,7 +54,7 @@ jobs:
         image: ${{ (contains(fromJson(inputs.services)[matrix.target], 'redis') || contains(fromJson(inputs.services)['*'], 'redis')) && 'redis' || '' }}
         ports: [6379:6379]
     steps:
-      - uses: infrabits/ci-setup-mysql@5068d01b5e9145c4aa58832083d378207fd0d361 # v1.6.0
+      - uses: infrabits/ci-setup-mysql@b73f6d72b65ad0272375ac083e3d25efdd4d5625 # v1.7.0
         with:
           username: ${{ fromJson(inputs.mysql_config)['username'] }}
           schemas: ${{ fromJson(inputs.mysql_config)['schemas'] }}
@@ -64,7 +64,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: setup python
-        uses: infrabits/ci-setup-python@e2b1af9cbd4f0cf31736b5ae234471b61aa41220 # v1.8.0
+        uses: infrabits/ci-setup-python@0e5179ada84a3ca313f5da73afcc6d5836dab809 # v1.9.0
         with:
           install_dependencies: ${{ inputs.install_dependencies }}
           install_test_dependencies: true
